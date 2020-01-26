@@ -1,0 +1,12 @@
+html head body {
+  height: 100%;
+  width: 100vw;
+}
+
+body {
+  margin: 0;
+}
+
+#mapid {
+  height: 100vh;
+}
