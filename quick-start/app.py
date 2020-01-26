@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, render_template, make_response
 import pyvips
+import time
 
 app = Flask(__name__)
 sizes = [2**i for i in range(7, 17)]  # 128 ~ 65536
 z2size = {0: 10240, 1: 5120}
 
 path = "/Users/takumi/datasets/WSI/CMU-1.ndpi"
-app.slide = pyvips.Image.new_from_file(path)
+app.slide = pyvips.Image.tiffload(path)
 max_zoom = int(app.slide.get("openslide.level-count"))
 
 
@@ -16,6 +17,8 @@ def get_maxZoom():
     return jsonify({"maxZoom": max_zoom})
 
 
+import numpy as np
+times = []
 @app.route("/<loc>.png", methods=["POST", "GET"])
 def get_patch(loc):
     z, x, y = [int(i) for i in loc.split("_")]
@@ -25,9 +28,12 @@ def get_patch(loc):
     x = patch_size * x
     y = patch_size * y
     patch = app.slide.crop(x, y, patch_size, patch_size).resize(scale)
-    patch_png = patch.pngsave_buffer()
+    now = time.time()
+    patch_png = patch.jpegsave_buffer(Q=95)
+    times.append(time.time()-now)
     res = make_response(patch_png)
     res.mimetype = f"image/png"
+    print(np.array(times).mean())
     return res
 
 

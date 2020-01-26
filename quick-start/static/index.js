@@ -2,10 +2,10 @@ var slideWidth = 51200
 var slideHeight = 38144
 
 var zoom2tileSize = {0: 4096, 1: 2048}  // 続く
-var bounds = [-(slideHeight/zoom2tileSize[0]), slideWidth/4096]
+var bounds = [-(slideHeight/zoom2tileSize[0])*256, (slideWidth/4096)*256]
 
 var mymap = L.map("mapid", {
-	zoom: 0,
+	zoom: 4,
 	center: [0, 0],
 	crs: L.CRS.Simple,
 	maxBounds: [[0, 0], bounds],
