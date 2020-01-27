@@ -1,4 +1,3 @@
-import os
 import sys
 from io import BytesIO
 from pathlib import Path
@@ -8,7 +7,6 @@ from openslide.deepzoom import DeepZoomGenerator
 
 app = Flask(__name__)
 
-# path = f"{os.environ.get('HOME')}/datasets/CMU-1.ndpi"
 path = sys.argv[1]
 tile_size = 256
 overlap = 0
@@ -39,6 +37,7 @@ def get_properties():
                   "z2patchWidth": z2patchWidth,
                   "z2patchHeight": z2patchHeight,
                   "default_zoom": app.slide.level_count,
+                  "dz_max_zoom": app.dz.level_count,
                   "filename": Path(path).name,
                   "z2tileCountLat": z2tileCountLat,
                   "z2tileCountLng": z2tileCountLng
