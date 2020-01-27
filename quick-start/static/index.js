@@ -25,7 +25,7 @@ function getProperties() {
 		var overlap = properties["overlap"]
 		var defaultZoom = properties["default_zoom"] + 1
 
-		mymap.setView([-Math.floor(z2slideHeight[defaultZoom]/2/tileSize)+1,Math.floor(z2slideWidth[defaultZoom]/2/tileSize)-1], defaultZoom)
+		mymap.setView([-Math.floor(z2slideHeight[defaultZoom]/2/tileSize)+1, Math.floor(z2slideWidth[defaultZoom]/2/tileSize)-1], defaultZoom)
 		mymap.setMaxBounds([[0, 0], [-(slideHeight/z2patchHeight[defaultZoom]), (slideWidth/z2patchWidth[defaultZoom])]])
 		mymap.setMinZoom(defaultZoom)
 		mymap.setMaxZoom(levelCount-1)
