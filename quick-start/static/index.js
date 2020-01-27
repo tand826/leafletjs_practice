@@ -1,11 +1,19 @@
-var mymap = L.map("mapid", {
-	center: [0, 0],
-	zoom: 9,
-	crs: L.CRS.Simple,
-})
 
-function getProperties() {
 
+function getCenterLatLng(map, z2slideWidth, z2slideHeight, level) {
+	return map.unproject([z2slideWidth[level]/2, z2slideHeight[level]/2], level)
+}
+
+function getBottomRight(map, z2slideWidth, z2slideHeight, level) {
+	return map.unproject([z2slideWidth[level], z2slideHeight[level]], level)
+}
+
+function setMap() {
+	var mymap = L.map("mapid", {
+		center: [0, 0],
+		zoom: 9,
+		crs: L.CRS.Simple,
+	})
 	fetch("/get_properties", {
 	  method: "GET",
 	}).then(response => response.text()
@@ -26,16 +34,10 @@ function getProperties() {
 		var defaultZoom = properties["default_zoom"] + 1
 		var dzMaxZoom = properties["dz_max_zoom"]
 
-		mymap.setView([-Math.floor(z2slideHeight[defaultZoom]/2/tileSize)+1, Math.floor(z2slideWidth[defaultZoom]/2/tileSize)-1], defaultZoom)
-		mymap.setMaxBounds([[0, 0], [-(slideHeight/z2patchHeight[defaultZoom]), (slideWidth/z2patchWidth[defaultZoom])]])
+		mymap.setView(getCenterLatLng(mymap, z2slideWidth, z2slideHeight, defaultZoom))
+		mymap.setMaxBounds([[0, 0], getBottomRight(mymap, z2slideWidth, z2slideHeight, defaultZoom)])
 		mymap.setMinZoom(defaultZoom)
 		mymap.setMaxZoom(levelCount-1)
-
-		console.log("center of view")
-		console.log([-Math.floor(z2slideHeight[defaultZoom]/2/tileSize)+1, Math.floor(z2slideWidth[defaultZoom]/2/tileSize)-1])
-
-		console.log("max bounds")
-		console.log([-(slideHeight/z2patchHeight[defaultZoom]), (slideWidth/z2patchWidth[defaultZoom])])
 
 		var bottomright = L.latLng(-0.1, 0.1)
 		L.marker(bottomright, {
@@ -58,6 +60,7 @@ function getProperties() {
 		})
 
 	})
+	return mymap
 }
 
-getProperties()
+var map = setMap()

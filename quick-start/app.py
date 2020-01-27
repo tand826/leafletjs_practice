@@ -1,6 +1,7 @@
 import sys
 from io import BytesIO
 from pathlib import Path
+from PIL import Image
 from flask import Flask, jsonify, render_template, make_response
 import openslide
 from openslide.deepzoom import DeepZoomGenerator
@@ -52,11 +53,20 @@ def get_patch(loc):
         patch = app.dz.get_tile(z, (x, y))
     except ValueError:
         return make_response()
+    if patch.size[0] != patch.size[1]:
+        patch = pad_rect(patch)
     buf = BytesIO()
     patch.save(buf, "png", quality=95)
     res = make_response(buf.getvalue())
     res.mimetype = f"image/png"
     return res
+
+
+@app.route("/pad_rect")
+def pad_rect(img):
+    base = Image.new("RGBA", (tile_size, tile_size), (0, 0, 0, 0))
+    base.paste(img)
+    return base
 
 
 @app.route("/")
