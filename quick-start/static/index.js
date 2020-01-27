@@ -44,18 +44,29 @@ function setMap() {
 	    draggable: true
 		}).addTo(mymap).bindPopup();
 
-		L.tileLayer("/{z}_{x}_{y}.png", {
+		var tilesLayer = L.tileLayer("/{z}_{x}_{y}.png", {
 			maxZoom: levelCount-1,
 			minZoom: defaultZoom,
 			tileSize: tileSize,
 			attribution: fileName
 			}
-		).addTo(mymap)
+		)
+		tilesLayer.addTo(mymap)
+
+		var mapLayer = L.tileLayer("/{z}_{x}_{y}.png", {
+			maxZoom: levelCount-1,
+			minZoom: defaultZoom,
+			tileSize: tileSize,
+			attribution: fileName
+			}
+		)
+		var miniMap = new L.Control.MiniMap(mapLayer)
+		miniMap.addTo(mymap)
 
 		mymap.on("zoomend", function(){
 			var currentZoomLevel = this.getZoom()
 			// this.unproject : returns [lat, lng ] at [h , w] of zoomlevel=z
-			var newBounds = this.unproject([z2slideWidth[currentZoomLevel], z2slideHeight[currentZoomLevel]], currentZoomLevel)
+			var newBounds = getBottomRight(this, z2slideWidth, z2slideHeight, currentZoomLevel)
 			this.setMaxBounds([[0, 0], newBounds])
 		})
 
